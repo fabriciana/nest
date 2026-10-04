@@ -95,8 +95,7 @@
       <div class="hdr"><span id="calTitle"></span><span id="viewName"></span></div>
       <div class="cal" id="dow"></div>
       <div class="cal" id="cal"></div>
-      <div class="legend">box = today &nbsp; bar = spoons left &nbsp; ✦●◐○✕ = mood &nbsp; ▪ = event or note &nbsp; ◆ = from notion</div>
-      <div class="legend" id="linkStat"></div>
+      <div class="legend">box = today &nbsp; bar = spoons left &nbsp; ✦●◐○✕ = mood &nbsp; ▪ = event or note</div>
     </section>
   </div>
 
@@ -121,10 +120,6 @@
     <div class="group"><h3>add to this day</h3>
       <input id="noteText" maxlength="60" placeholder="physics exam, call mom, good day" aria-label="event or note text">
       <div class="row"><input type="time" id="noteTime" aria-label="time, optional"><button class="k" data-kind="event">event</button><button class="k" data-kind="note">note</button></div>
-    </div>
-    <div class="group"><h3>notion link</h3>
-      <input id="relayUrl" placeholder="relay address" aria-label="relay address" autocomplete="off">
-      <div class="row"><input id="relayKey" type="password" placeholder="passphrase" aria-label="relay passphrase" style="width:110px;margin:0" autocomplete="off"><button class="k" id="saveLink">save link</button><button class="k" id="sendNow">send day</button></div>
     </div>
     <aside class="tube" title="the bunny glows with the spoons left on the selected day">
       <svg id="bun" viewBox="0 0 60 80" aria-hidden="true">
@@ -155,7 +150,7 @@ const STATES=[[.75,'charged','windows open. the moss is drinking light.'],[.5,'s
 let R={url:'',key:''}; try{R=JSON.parse(localStorage.getItem('nest-relay'))||R}catch(e){}
 const remote={}, loaded={}, timers={};
 const linked=()=>!!(R.url&&R.key);
-const say=m=>{$('linkStat').textContent='notion: '+m};
+const say=m=>{};
 async function api(path,opt={}){
   const r=await fetch(R.url.replace(/\/$/,'')+path,{...opt,headers:{'content-type':'application/json','x-nest-key':R.key}});
   if(!r.ok) throw new Error('error '+r.status); return r.json();
@@ -239,11 +234,6 @@ document.querySelectorAll('[data-kind]').forEach(b=>b.onclick=()=>{const text=$(
 const setWake=n=>{const c=calc(sel);own(sel).wake=Math.max(1,Math.min(30,c.wake+n));if(sel===TODAY)S.wakeDefault=own(sel).wake;queueSync(sel);render()};
 $('wp').onclick=()=>setWake(1); $('wm').onclick=()=>setWake(-1);
 $('undo').onclick=()=>{own(sel).log.pop();queueSync(sel);render()};
-$('sendNow').onclick=()=>sendDay(sel);
-$('saveLink').onclick=()=>{R={url:$('relayUrl').value.trim(),key:$('relayKey').value};try{localStorage.setItem('nest-relay',JSON.stringify(R))}catch(e){}
-  Object.keys(loaded).forEach(k=>delete loaded[k]); say(linked()?'checking link':'not linked yet. add the relay address and passphrase.'); render()};
-$('relayUrl').value=R.url; $('relayKey').value=R.key;
-say(linked()?'checking link':'not linked yet. add the relay address and passphrase.');
 $('clear').onclick=()=>{if(armed){delete S.days[sel];armed=false}else{armed=true;setTimeout(()=>{armed=false;render()},3000)}render()};
 $('vToggle').onclick=()=>{view=view==='month'?'week':'month';cursor=fromIso(sel);render()};
 const step=n=>{if(view==='month')cursor=new Date(cursor.getFullYear(),cursor.getMonth()+n,1);else{cursor=new Date(cursor);cursor.setDate(cursor.getDate()+7*n)}render()};
