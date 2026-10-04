@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
 <title>nest console</title>
 <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
@@ -12,7 +13,7 @@
   }
   *{box-sizing:border-box}
   html,body{margin:0;min-height:100%}
-  body{background:#11150f;padding:10px;font-family:"Share Tech Mono",ui-monospace,Menlo,monospace;color:var(--ink);font-size:12px}
+  body{background:transparent;padding:10px;font-family:"Share Tech Mono",ui-monospace,Menlo,monospace;color:var(--ink);font-size:12px}
   .unit{max-width:980px;margin:0 auto;background:var(--case);border-radius:8px;padding:12px;
     border:2px solid var(--case-dk);box-shadow:inset 0 3px 0 var(--case-hi),inset 0 -5px 0 var(--case-lo),0 10px 30px #000b;
     background-image:radial-gradient(#0000000f 1px,transparent 1px),linear-gradient(100deg,#fff1,#0001);background-size:4px 4px,100% 100%}
@@ -71,6 +72,25 @@
   .tube span{position:absolute;bottom:2px;font-size:9px;color:#7fb6c4}
   @media (max-width:700px){.screens{grid-template-columns:1fr}.panel{grid-template-columns:1fr}.tube{min-height:80px}.week .day{min-height:120px}}
   @media (prefers-reduced-motion:reduce){.tube svg{transition:none}}
+
+  /* transparent surround + lit hardware keys */
+  html{background:transparent}
+  .unit{box-shadow:inset 0 3px 0 var(--case-hi),inset 0 -5px 0 var(--case-lo),0 4px 14px #0006}
+  button.k{color:#6a1711;background:linear-gradient(#f4eaa6,#d8c768);border:2px solid #34321f;border-radius:3px;padding:7px 9px;letter-spacing:.5px;
+    box-shadow:inset 0 0 0 2px #fff7c855,inset 0 -4px 0 #0000002e,0 4px 0 #34321f,0 0 9px #e9de7a55;transition:box-shadow .12s,background .12s}
+  button.k:hover{box-shadow:inset 0 0 0 2px #fff7c855,inset 0 -4px 0 #0000002e,0 4px 0 #34321f,0 0 15px #f1e88abb}
+  button.k:active,button.k[aria-pressed=true]{transform:translateY(4px);background:linear-gradient(#d6ffd0,#86e7a8);color:#0c3a22;
+    box-shadow:inset 0 0 0 2px #ffffff66,0 0 14px #9df2c4cc}
+  button.k.give{background:radial-gradient(circle at 50% 30%,#d9ffe6,#63cf97);color:#0c3a22;border-color:#1f4a36;
+    box-shadow:inset 0 0 0 2px #ffffff55,inset 0 -4px 0 #0000002e,0 4px 0 #1f4a36,0 0 10px #7fe8b388}
+  .keys{background:#26281f;padding:8px;border-radius:6px;box-shadow:inset 0 2px 6px #000}
+  .keys button.k{background:#12251b;color:#9df2c4;border-color:#0a120d;font-family:"VT323",ui-monospace,monospace;font-size:18px;padding:3px 10px;
+    text-shadow:0 0 5px #9df2c488;box-shadow:inset 0 0 0 1px #9df2c4,0 3px 0 #0a120d,0 0 8px #9df2c433}
+  .keys button.k:hover{background:#9df2c4;color:#07130d;text-shadow:none}
+  .keys button.k:active{transform:translateY(3px);box-shadow:inset 0 0 0 1px #9df2c4}
+  .keys button.k.red{background:#2a0f0c;color:#ff9a86;text-shadow:0 0 5px #ff6a5588;box-shadow:inset 0 0 0 1px #ff8a73,0 3px 0 #0a120d,0 0 8px #ff6a5544}
+  .keys button.k.red:hover{background:#ff8a73;color:#2a0f0c;text-shadow:none}
+  @media (prefers-reduced-motion:reduce){button.k{transition:none}}
 </style>
 </head>
 <body>
