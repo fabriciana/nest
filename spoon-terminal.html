@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nest console</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --case:#cfc7a6; --case-hi:#e4dec3; --case-lo:#8a8364; --case-dk:#5f5a45; --ink:#a3271f;
+    --glass:#07130d; --phos:#9df2c4; --phos-dim:#3f7a63; --amber:#d7e36a; --tube:#9fe8ff;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%}
+  body{background:#11150f;padding:10px;font-family:"Share Tech Mono",ui-monospace,Menlo,monospace;color:var(--ink);font-size:12px}
+  .unit{max-width:980px;margin:0 auto;background:var(--case);border-radius:8px;padding:12px;
+    border:2px solid var(--case-dk);box-shadow:inset 0 3px 0 var(--case-hi),inset 0 -5px 0 var(--case-lo),0 10px 30px #000b;
+    background-image:radial-gradient(#0000000f 1px,transparent 1px),linear-gradient(100deg,#fff1,#0001);background-size:4px 4px,100% 100%}
+  .plate{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;letter-spacing:2px}
+  .plate i{width:9px;height:9px;border-radius:50%;background:#5c5a48;box-shadow:inset 0 0 0 2px #8f8a70;display:inline-block}
+  .screens{display:grid;grid-template-columns:1.05fr 1fr;gap:10px}
+  .crt{background:var(--glass);border:7px solid #26281f;border-radius:16px/22px;padding:10px 12px;position:relative;overflow:hidden;
+    box-shadow:inset 0 0 46px #000,inset 0 0 10px #9df2c433,0 0 0 2px var(--case-lo);
+    font-family:"VT323",ui-monospace,monospace;font-size:18px;line-height:1.1;color:var(--phos);text-shadow:0 0 5px #9df2c477;min-height:330px}
+  .crt::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(#0000 0 2px,#0005 2px 3px)}
+  .crt.amber{--phos:var(--amber);--phos-dim:#6f7a2c;text-shadow:0 0 5px #d7e36a66}
+  .hdr{display:flex;justify-content:space-between;color:var(--phos-dim);border-bottom:1px solid var(--phos-dim);padding-bottom:3px;margin-bottom:7px}
+  .win{border:1px solid var(--phos);margin-bottom:8px}
+  .win>h2{margin:0;font:inherit;display:flex;justify-content:space-between;background:var(--phos);color:var(--glass);text-shadow:none;padding:0 6px}
+  .win>div{padding:5px 7px}
+  .eq{font-size:38px}
+  .sub{color:var(--phos-dim)}
+  .meter{font-size:22px;letter-spacing:2px;word-break:break-all}
+  .meter s{text-decoration:none;color:var(--phos-dim);text-shadow:none}
+  .inv{background:var(--phos);color:var(--glass);text-shadow:none;padding:0 5px}
+  .list{height:74px;overflow-y:auto}
+  .list p{margin:0;display:flex;justify-content:space-between;gap:8px}
+  .x{all:unset;cursor:pointer;color:var(--phos-dim);padding:0 4px}
+  .x:hover,.x:focus-visible{color:var(--phos);outline:1px solid var(--phos)}
+  .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+  .dow{color:var(--phos-dim);text-align:center}
+  .day{all:unset;box-sizing:border-box;cursor:pointer;border:1px solid var(--phos-dim);min-height:34px;padding:1px 4px;position:relative;display:block;overflow:hidden}
+  .week .day{min-height:210px}
+  .day.out{opacity:.35}
+  .day.today{border:2px solid var(--phos)}
+  .day.sel{background:var(--phos);color:var(--glass);text-shadow:none}
+  .day:focus-visible{outline:2px dashed var(--phos);outline-offset:1px}
+  .day b{font-weight:400}
+  .day em{font-style:normal;float:right}
+  .day u{position:absolute;left:0;bottom:0;height:4px;background:currentColor;text-decoration:none;opacity:.8}
+  .day small{display:block;font-size:15px;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .legend{color:var(--phos-dim);margin-top:6px;font-size:16px}
+  .keys{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+  .panel{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr)) 76px;gap:12px;align-items:stretch}
+  .group{border:2px solid var(--ink);border-radius:5px;padding:12px 9px 9px;position:relative}
+  .group h3{position:absolute;top:-8px;left:8px;margin:0;background:var(--case);padding:0 5px;font-size:11px;font-weight:400;letter-spacing:1px}
+  .row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  button.k{font:inherit;color:var(--ink);background:linear-gradient(var(--case-hi),#d9d2b4);border:2px solid var(--case-dk);border-radius:4px;
+    padding:6px 8px;min-width:34px;cursor:pointer;box-shadow:0 3px 0 var(--case-dk)}
+  button.k:active,button.k[aria-pressed=true]{transform:translateY(3px);box-shadow:none;background:#efe58f}
+  button.k.give{color:#1d5a2e}
+  button.k.red{background:var(--ink);color:var(--case-hi)}
+  button:focus-visible,input:focus-visible{outline:3px solid #1d5a6b;outline-offset:2px}
+  .knob{width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#6b6650,#2b2a20);border:3px solid var(--case-dk);
+    display:grid;place-items:center;color:var(--amber);font-family:"VT323",monospace;font-size:24px;box-shadow:0 3px 0 var(--case-lo)}
+  input{font:inherit;width:100%;padding:6px 7px;border:2px solid var(--case-dk);border-radius:4px;background:#ece6cc;color:#26281f;margin-bottom:7px}
+  input[type=time]{width:auto;margin:0}
+  .tube{background:linear-gradient(90deg,#0b1a22,#14394a 45%,#0b1a22);border-radius:38px 38px 8px 8px;border:5px solid #26281f;
+    display:flex;align-items:flex-end;justify-content:center;padding-bottom:16px;position:relative;min-height:120px}
+  .tube svg{width:46px;transition:opacity .6s,filter .6s,transform .6s}
+  .tube span{position:absolute;bottom:2px;font-size:9px;color:#7fb6c4}
+  @media (max-width:700px){.screens{grid-template-columns:1fr}.panel{grid-template-columns:1fr}.tube{min-height:80px}.week .day{min-height:120px}}
+  @media (prefers-reduced-motion:reduce){.tube svg{transition:none}}
+</style>
+</head>
+<body>
+<main class="unit">
+  <div class="plate"><i></i><span>nest console &nbsp;/&nbsp; unit 07 &nbsp;/&nbsp; resident 01</span><i></i></div>
+
+  <div class="screens">
+    <section class="crt" aria-live="polite">
+      <div class="hdr"><span>nest.os / day file</span><span id="selLabel"></span></div>
+      <div class="win"><h2><span>spoon telemetry</span><span>[?]</span></h2><div>
+        <div class="eq" id="eq"></div>
+        <div class="sub">at wake − spent + given back = left</div>
+        <div class="meter" id="meter" aria-hidden="true"></div>
+        <div>state: <span class="inv" id="state"></span> <span id="line"></span></div>
+        <div>mood: <span id="moodOut" class="sub"></span></div>
+      </div></div>
+      <div class="win"><h2><span>observation log</span><span>[x]</span></h2><div class="list" id="log"></div></div>
+      <div class="win"><h2><span>events and notes</span><span>[x]</span></h2><div class="list" id="notes"></div></div>
+    </section>
+
+    <section class="crt amber">
+      <div class="hdr"><span id="calTitle"></span><span id="viewName"></span></div>
+      <div class="cal" id="dow"></div>
+      <div class="cal" id="cal"></div>
+      <div class="legend">box = today &nbsp; bar = spoons left &nbsp; ✦●◐○✕ = mood &nbsp; ▪ = event or note &nbsp; ◆ = from notion</div>
+      <div class="legend" id="linkStat"></div>
+    </section>
+  </div>
+
+  <div class="keys">
+    <button class="k" id="vToggle">week view</button>
+    <button class="k" id="prev" aria-label="previous">‹ back</button>
+    <button class="k" id="goToday">today</button>
+    <button class="k" id="next" aria-label="next">forward ›</button>
+    <button class="k" id="undo">undo last spoon</button>
+    <button class="k red" id="clear">clear this day</button>
+  </div>
+
+  <div class="panel">
+    <div class="group"><h3>spoons at wake</h3>
+      <div class="row"><button class="k" id="wm" aria-label="one fewer spoon at wake">−</button><div class="knob" id="wake"></div><button class="k" id="wp" aria-label="one more spoon at wake">+</button></div>
+    </div>
+    <div class="group"><h3>log spoons</h3>
+      <input id="what" maxlength="40" placeholder="what was it? class, shower, nap" aria-label="what the spoons went to">
+      <div class="row"><button class="k" data-d="-1">−1</button><button class="k" data-d="-2">−2</button><button class="k" data-d="-3">−3</button><button class="k give" data-d="1">+1 back</button></div>
+    </div>
+    <div class="group"><h3>mood</h3><div class="row" id="moods"></div></div>
+    <div class="group"><h3>add to this day</h3>
+      <input id="noteText" maxlength="60" placeholder="physics exam, call mom, good day" aria-label="event or note text">
+      <div class="row"><input type="time" id="noteTime" aria-label="time, optional"><button class="k" data-kind="event">event</button><button class="k" data-kind="note">note</button></div>
+    </div>
+    <div class="group"><h3>notion link</h3>
+      <input id="relayUrl" placeholder="relay address" aria-label="relay address" autocomplete="off">
+      <div class="row"><input id="relayKey" type="password" placeholder="passphrase" aria-label="relay passphrase" style="width:110px;margin:0" autocomplete="off"><button class="k" id="saveLink">save link</button><button class="k" id="sendNow">send day</button></div>
+    </div>
+    <aside class="tube" title="the bunny glows with the spoons left on the selected day">
+      <svg id="bun" viewBox="0 0 60 80" aria-hidden="true">
+        <g fill="var(--tube)"><ellipse cx="22" cy="20" rx="6" ry="19" transform="rotate(-8 22 20)"/><ellipse cx="38" cy="20" rx="6" ry="19" transform="rotate(8 38 20)"/><circle cx="30" cy="42" r="15"/><ellipse cx="30" cy="62" rx="20" ry="16"/></g>
+        <circle cx="24" cy="40" r="2" fill="#0b1a22"/><circle cx="36" cy="40" r="2" fill="#0b1a22"/>
+      </svg><span>specimen</span>
+    </aside>
+  </div>
+</main>
+
+<script>
+const KEY='nest-console-v2';
+let mem=null;
+const store={get(){try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return mem}},set(v){mem=v;try{localStorage.setItem(KEY,JSON.stringify(v))}catch(e){}}};
+const S=store.get()||{wakeDefault:12,days:{}};
+const pad=n=>String(n).padStart(2,'0');
+const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const fromIso=k=>{const[a,b,c]=k.split('-').map(Number);return new Date(a,b-1,c)};
+const esc=s=>String(s).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+const $=id=>document.getElementById(id);
+const TODAY=iso(new Date());
+let sel=TODAY, view='month', cursor=new Date(), armed=false;
+
+const MOODS=[['bright','✦'],['good','●'],['okay','◐'],['low','○'],['rough','✕']];
+const STATES=[[.75,'charged','windows open. the moss is drinking light.'],[.5,'steady','systems nominal. keep an even pace.'],
+  [.25,'dimming','power saving on. one thing at a time.'],[.001,'drained','stop adding. open the low-spoon menu.'],[-1,'offline','lanterns dimmed. the nest is holding you.']];
+
+let R={url:'',key:''}; try{R=JSON.parse(localStorage.getItem('nest-relay'))||R}catch(e){}
+const remote={}, loaded={}, timers={};
+const linked=()=>!!(R.url&&R.key);
+const say=m=>{$('linkStat').textContent='notion: '+m};
+async function api(path,opt={}){
+  const r=await fetch(R.url.replace(/\/$/,'')+path,{...opt,headers:{'content-type':'application/json','x-nest-key':R.key}});
+  if(!r.ok) throw new Error('error '+r.status); return r.json();
+}
+async function sendDay(k){
+  if(!linked()){say('not linked yet. add the relay address and passphrase.');return}
+  const c=calc(k), st=STATES.find(x=>c.frac>=x[0]); say('sending '+k);
+  try{await api('/checkin',{method:'POST',body:JSON.stringify({date:k,wake:c.wake,spent:c.spent-c.back,mood:c.d.mood,energy:st[1],
+    note:c.d.notes.filter(n=>n.kind==='note').map(n=>n.text).join(' / ')})}); say('check-in for '+k+' saved')}
+  catch(e){say('check-in not saved ('+e.message+'). try "send day" again.')}
+}
+function queueSync(k){if(!linked())return;clearTimeout(timers[k]);timers[k]=setTimeout(()=>sendDay(k),3000)}
+async function sendEvent(k,n){
+  if(!linked())return;
+  try{const r=await api('/event',{method:'POST',body:JSON.stringify({date:k,time:n.time,text:n.text})}); n.nid=r.id; store.set(S); say('event saved to plans')}
+  catch(e){say('event not saved ('+e.message+')')}
+}
+async function pull(from,to){
+  if(!linked()||loaded[from+to])return; loaded[from+to]=1;
+  try{const r=await api('/items?from='+from+'&to='+to);
+    r.items.forEach(i=>{const a=remote[i.date]=remote[i.date]||[]; if(!a.some(x=>x.id===i.id))a.push(i)}); say('linked'); render()}
+  catch(e){say('could not read notion ('+e.message+')')}
+}
+const rem=k=>(remote[k]||[]).filter(i=>!peek(k).notes.some(n=>n.nid===i.id));
+const peek=k=>S.days[k]||{wake:null,log:[],mood:'',notes:[]};
+const own=k=>S.days[k]||(S.days[k]={wake:null,log:[],mood:'',notes:[]});
+function calc(k){
+  const d=peek(k), wake=d.wake??S.wakeDefault;
+  const spent=d.log.filter(e=>e.d<0).reduce((a,e)=>a-e.d,0), back=d.log.filter(e=>e.d>0).reduce((a,e)=>a+e.d,0);
+  const left=Math.max(0,wake-spent+back);
+  return {d,wake,spent,back,left,frac:wake?Math.min(left/wake,1):0,used:d.log.length>0||d.wake!=null};
+}
+function cell(date,out){
+  const k=iso(date),c=calc(k),m=MOODS.find(x=>x[0]===c.d.mood);
+  let h=`<b>${date.getDate()}</b><em>${m?m[1]:''}${c.d.notes.length?'▪':''}${rem(k).length?'◆':''}</em>`;
+  if(view==='week') h+=c.d.notes.slice(0,6).map(n=>`<small>${n.time?n.time+' ':''}${esc(n.text)}</small>`).join('')+rem(k).slice(0,4).map(i=>`<small>◆ ${esc(i.title)}</small>`).join('')+(c.used?`<small>${c.left}/${c.wake} spoons</small>`:'');
+  if(c.used) h+=`<u style="width:${Math.round(c.frac*100)}%"></u>`;
+  return `<button class="day${k===TODAY?' today':''}${k===sel?' sel':''}${out?' out':''}" data-k="${k}" aria-label="${date.toDateString()}">${h}</button>`;
+}
+function render(){
+  const c=calc(sel), sd=fromIso(sel);
+  $('selLabel').textContent=sd.toLocaleDateString(undefined,{weekday:'short',day:'2-digit',month:'short'}).toLowerCase()+(sel===TODAY?' (today)':'');
+  $('eq').textContent=`${c.wake} − ${c.spent} + ${c.back} = ${c.left}`;
+  $('meter').innerHTML='●'.repeat(Math.min(c.left,24))+'<s>'+'○'.repeat(Math.min(Math.max(c.wake-c.left,0),24))+'</s>';
+  const st=STATES.find(x=>c.frac>=x[0]); $('state').textContent=st[1]; $('line').textContent=st[2];
+  $('moodOut').textContent=c.d.mood||'not set';
+  $('wake').textContent=c.wake;
+  $('log').innerHTML=c.d.log.length?c.d.log.slice().reverse().map(e=>`<p><span>${e.t}  ${e.d>0?'+':'−'}${Math.abs(e.d)}  ${esc(e.n)}</span></p>`).join(''):'<p class="sub">no spoons logged for this day.</p>';
+  const rl=rem(sel).map(i=>`<p><span>◆ ${i.time?i.time+' ':''}${esc(i.title)} (${esc(i.kind)})</span></p>`).join('');
+  $('notes').innerHTML=c.d.notes.length||rl?rl+c.d.notes.map((n,i)=>`<p><span>${n.kind==='event'?'▪':'·'} ${n.time?n.time+' ':''}${esc(n.text)}</span><button class="x" data-rm="${i}" aria-label="remove">x</button></p>`).join(''):'<p class="sub">nothing on this day yet. add an event or note below.</p>';
+  document.querySelectorAll('#moods button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===c.d.mood));
+  const b=$('bun'); b.style.opacity=.25+.75*c.frac; b.style.filter=`drop-shadow(0 0 ${Math.round(14*c.frac)}px #9fe8ff)`; b.style.transform=c.left?'none':'translateY(6px) scaleY(.9)';
+  // calendar
+  let cells='',start;
+  if(view==='month'){
+    const first=new Date(cursor.getFullYear(),cursor.getMonth(),1); start=new Date(first); start.setDate(1-first.getDay());
+    for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);cells+=cell(d,d.getMonth()!==cursor.getMonth())}
+    $('calTitle').textContent=cursor.toLocaleDateString(undefined,{month:'long',year:'numeric'}).toLowerCase();
+  }else{
+    start=new Date(cursor); start.setDate(cursor.getDate()-cursor.getDay());
+    for(let i=0;i<7;i++){const d=new Date(start);d.setDate(start.getDate()+i);cells+=cell(d,false)}
+    $('calTitle').textContent='week of '+start.toLocaleDateString(undefined,{day:'2-digit',month:'short'}).toLowerCase();
+  }
+  const end=new Date(start); end.setDate(start.getDate()+(view==='month'?41:6)); pull(iso(start),iso(end));
+  $('cal').innerHTML=cells; $('cal').className='cal '+view;
+  $('viewName').textContent=view+' view'; $('vToggle').textContent=view==='month'?'week view':'month view';
+  $('clear').textContent=armed?'sure?':'clear this day';
+  store.set(S);
+}
+$('dow').innerHTML=['s','m','t','w','t','f','s'].map(x=>`<div class="dow">${x}</div>`).join('');
+$('moods').innerHTML=MOODS.map(m=>`<button class="k" data-m="${m[0]}" aria-pressed="false">${m[1]} ${m[0]}</button>`).join('');
+
+$('cal').onclick=e=>{const b=e.target.closest('.day');if(b){sel=b.dataset.k;cursor=fromIso(sel);render()}};
+$('notes').onclick=e=>{const b=e.target.closest('[data-rm]');if(b){own(sel).notes.splice(+b.dataset.rm,1);queueSync(sel);render()}};
+$('moods').onclick=e=>{const b=e.target.closest('[data-m]');if(b){const d=own(sel);d.mood=d.mood===b.dataset.m?'':b.dataset.m;queueSync(sel);render()}};
+document.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{const d=+b.dataset.d;
+  own(sel).log.push({d,n:$('what').value.trim()||(d>0?'rest':'unlabelled'),t:new Date().toTimeString().slice(0,5)});$('what').value='';queueSync(sel);render()});
+document.querySelectorAll('[data-kind]').forEach(b=>b.onclick=()=>{const text=$('noteText').value.trim();if(!text){$('noteText').focus();return}
+  const d=own(sel),n={kind:b.dataset.kind,text,time:$('noteTime').value};d.notes.push(n);
+  if(n.kind==='event')sendEvent(sel,n);else queueSync(sel);d.notes.sort((a,z)=>(a.time||'99').localeCompare(z.time||'99'));$('noteText').value='';$('noteTime').value='';render()});
+const setWake=n=>{const c=calc(sel);own(sel).wake=Math.max(1,Math.min(30,c.wake+n));if(sel===TODAY)S.wakeDefault=own(sel).wake;queueSync(sel);render()};
+$('wp').onclick=()=>setWake(1); $('wm').onclick=()=>setWake(-1);
+$('undo').onclick=()=>{own(sel).log.pop();queueSync(sel);render()};
+$('sendNow').onclick=()=>sendDay(sel);
+$('saveLink').onclick=()=>{R={url:$('relayUrl').value.trim(),key:$('relayKey').value};try{localStorage.setItem('nest-relay',JSON.stringify(R))}catch(e){}
+  Object.keys(loaded).forEach(k=>delete loaded[k]); say(linked()?'checking link':'not linked yet. add the relay address and passphrase.'); render()};
+$('relayUrl').value=R.url; $('relayKey').value=R.key;
+say(linked()?'checking link':'not linked yet. add the relay address and passphrase.');
+$('clear').onclick=()=>{if(armed){delete S.days[sel];armed=false}else{armed=true;setTimeout(()=>{armed=false;render()},3000)}render()};
+$('vToggle').onclick=()=>{view=view==='month'?'week':'month';cursor=fromIso(sel);render()};
+const step=n=>{if(view==='month')cursor=new Date(cursor.getFullYear(),cursor.getMonth()+n,1);else{cursor=new Date(cursor);cursor.setDate(cursor.getDate()+7*n)}render()};
+$('prev').onclick=()=>step(-1); $('next').onclick=()=>step(1);
+$('goToday').onclick=()=>{sel=TODAY;cursor=new Date();render()};
+render();
+</script>
+</body>
+</html>
