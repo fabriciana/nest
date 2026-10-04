@@ -19,6 +19,11 @@ jobs:
         run: python steam_sync.py
         env:
           NOTION_DB: 3ef22275-a605-8126-961d-d2381159cf27
+      - name: callie's wishlist
+        run: python steam_sync.py
+        env:
+          NOTION_DB: 3ef22275-a605-81cf-b932-f7a1965eefe5
+          STEAM_ID: "76561198983088966"
       - name: hours played
         run: python steam_played.py
         env:
