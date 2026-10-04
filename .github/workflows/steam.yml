@@ -1,4 +1,4 @@
-name: refresh steam wishlist
+name: refresh steam tables
 on:
   schedule:
     - cron: "17 */6 * * *"
@@ -6,14 +6,21 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    env:
+      NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+      STEAM_ID: "76561199240283007"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - run: pip install requests
-      - run: python steam_sync.py
+      - name: wishlist
+        run: python steam_sync.py
         env:
-          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_DB: 3ef22275-a605-8126-961d-d2381159cf27
-          STEAM_ID: "76561199240283007"
+      - name: hours played
+        run: python steam_played.py
+        env:
+          NOTION_PLAYED_DB: 3ef22275-a605-8134-a488-ca1d424606ee
+          STEAM_KEY: ${{ secrets.STEAM_KEY }}
