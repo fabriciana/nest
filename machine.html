@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>nest.os terminal</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  /* the machine around the screen. change these colours to repaint the casing. */
+  :root{ --case:#b7b189; --case-hi:#d2cda8; --case-lo:#8c8762; --case-dk:#55523a; --ink:#45442c; --led:#7dff8a; --accent:#e8873d; }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:transparent}
+  body{padding:6px;font:10px "Share Tech Mono",ui-monospace,Menlo,Consolas,monospace;color:var(--ink);letter-spacing:1px;text-transform:uppercase}
+  .machine{height:100%;display:flex;flex-direction:column;background:var(--case);border:2px solid var(--case-dk);border-radius:14px 14px 10px 10px;padding:10px 12px 8px;
+    box-shadow:inset 0 3px 0 var(--case-hi),inset 0 -6px 0 var(--case-lo),inset 3px 0 0 #ffffff22,inset -3px 0 0 #00000022,0 4px 12px #0006;
+    background-image:radial-gradient(#0000000d 1px,transparent 1px),linear-gradient(115deg,#ffffff14,#0000 40%,#0000001a);background-size:4px 4px,100% 100%}
+  .top{display:flex;justify-content:space-between;align-items:center;padding:0 4px 7px}
+  .screw{width:9px;height:9px;border-radius:50%;background:#6a674c;box-shadow:inset 0 0 0 2px #9a9573,inset 0 0 0 3px #4a4835;position:relative}
+  .screw::after{content:"";position:absolute;left:1px;right:1px;top:4px;height:1px;background:#33321f;transform:rotate(35deg)}
+  .bezel{flex:1;min-height:0;background:#2b2c20;border-radius:16px;padding:12px;box-shadow:inset 0 4px 10px #000,inset 0 0 0 2px #1a1b13,0 2px 0 var(--case-hi)}
+  .glass{height:100%;position:relative;border-radius:14px/18px;overflow:hidden;background:#05080a;box-shadow:0 0 0 2px #0c0d08}
+  .glass iframe{width:100%;height:100%;border:0;display:block;transition:filter .25s}
+  .glass::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+    box-shadow:inset 0 0 38px #000c,inset 0 0 6px #000;background:radial-gradient(120% 90% at 22% 8%,#ffffff12,#0000 45%)}
+  .off .glass iframe{visibility:hidden}
+  .off .glass::before{content:"";position:absolute;left:50%;top:50%;width:3px;height:3px;margin:-1px;border-radius:50%;background:#cfe;box-shadow:0 0 10px #cfe;animation:dot 1.2s ease-out forwards}
+  @keyframes dot{from{width:60%;height:2px;margin:-1px 0 0 -30%;opacity:1}to{width:3px;height:3px;opacity:0}}
+  .deck{display:flex;align-items:center;gap:14px;padding:9px 4px 2px;flex:none}
+  .plate{border:1px solid var(--ink);padding:3px 7px;border-radius:2px;white-space:nowrap}
+  .ctl{display:flex;flex-direction:column;align-items:center;gap:3px}
+  .pwr{width:34px;height:20px;border-radius:4px;border:2px solid var(--case-dk);background:var(--accent);cursor:pointer;box-shadow:0 3px 0 var(--case-dk),inset 0 0 0 1px #ffffff55}
+  .pwr:active,.off .pwr{transform:translateY(3px);box-shadow:none;background:#9c5a2a}
+  .knob{width:30px;height:30px;border-radius:50%;border:2px solid var(--case-dk);cursor:pointer;padding:0;position:relative;
+    background:radial-gradient(circle at 35% 30%,#d9d3ab,#8e8963);box-shadow:0 3px 0 var(--case-dk);transition:transform .2s}
+  .knob::after{content:"";position:absolute;left:50%;top:3px;width:2px;height:9px;margin-left:-1px;background:var(--ink)}
+  button:focus-visible{outline:2px solid #1d5a6b;outline-offset:3px}
+  .led{display:flex;align-items:center;gap:5px;margin-left:auto}
+  .led i{width:8px;height:8px;border-radius:2px;background:var(--led);box-shadow:0 0 6px var(--led),inset 0 0 0 1px #0006}
+  .off .led i{background:#3d4a32;box-shadow:inset 0 0 0 1px #0006}
+  .grille{flex:1;max-width:130px;height:26px;background:repeating-linear-gradient(90deg,var(--case-dk) 0 2px,transparent 2px 6px);border-radius:3px;opacity:.75}
+  @media (max-width:520px){.grille,.plate{display:none}}
+  @media (prefers-reduced-motion:reduce){.off .glass::before{animation:none;opacity:0}.glass iframe,.knob{transition:none}}
+</style>
+</head>
+<body>
+<div class="machine" id="m">
+  <div class="top"><span class="screw"></span><span>property of the burrow &nbsp;/&nbsp; nest systems</span><span class="screw"></span></div>
+  <div class="bezel"><div class="glass"><iframe id="scr" src="desk.html" title="nest.os desktop"></iframe></div></div>
+  <div class="deck">
+    <div class="ctl"><button class="pwr" id="pwr" aria-label="power" aria-pressed="true"></button><span>pwr</span></div>
+    <div class="ctl"><button class="knob" id="bri" aria-label="screen brightness"></button><span>bright</span></div>
+    <div class="grille" aria-hidden="true"></div>
+    <div class="plate">model nt-07 "moss"</div>
+    <div class="led"><i></i><span>power</span></div>
+  </div>
+</div>
+<script>
+const m=document.getElementById('m'), scr=document.getElementById('scr'), pwr=document.getElementById('pwr'), bri=document.getElementById('bri');
+const levels=[1,.8,.6]; let lv=0, on=true;
+try{ lv=+localStorage.getItem('machine-bright')||0; }catch(e){}
+function draw(){ scr.style.filter='brightness('+levels[lv]+')'; bri.style.transform='rotate('+(lv*-50)+'deg)'; m.classList.toggle('off',!on); pwr.setAttribute('aria-pressed',on); }
+bri.onclick=()=>{ lv=(lv+1)%levels.length; try{localStorage.setItem('machine-bright',lv)}catch(e){} draw(); };
+pwr.onclick=()=>{ on=!on; draw(); };
+draw();
+</script>
+</body>
+</html>
