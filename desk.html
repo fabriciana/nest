@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<title>Desk</title>
+<title>nest.os</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
   :root{
     --face:#8298b0; --light:#b6cee4; --shadow:#4e6074; --dark:#000814; --hilite2:#9db4cc;
@@ -281,19 +282,71 @@
   table.cust td:nth-child(2){text-align:left;width:100%}
   table.cust img{width:16px;height:16px;vertical-align:middle}
   .helpdoc .tabbody b{display:inline}
+
+  /* ===== nest.os terminal skin (edit the colours on the next lines to re-theme) ===== */
+  :root,:root[data-scheme="classic"]{
+    --face:#11160e; --line:#6f7d45; --line-dim:#39432a; --text:#c5d39b; --amber:#e8a33d; --ink:#0b0f0a; --well:#0b0f0a;
+    --light:var(--line); --shadow:var(--line); --dark:var(--face); --hilite2:var(--face);
+    --title:var(--text); --title-inactive:var(--face); --title-text:var(--ink); --sel:var(--text); --gray-text:#6d7657;
+    color-scheme:dark;
+  }
+  body, body *{font-family:"Share Tech Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace !important}
+  body{-webkit-font-smoothing:auto}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:5000;background:repeating-linear-gradient(#0000 0 2px,#00000022 2px 3px)}
+  *{scrollbar-color:var(--line-dim) var(--well);scrollbar-width:thin}
+  .raised,.btn,.dd,#startmenu,.dlg,.task,.tab,.tabbody,.slider .thumb,.qbtn:hover,.qbtn:active{box-shadow:inset 0 0 0 1px var(--line)}
+  .win{box-shadow:inset 0 0 0 1px var(--line-dim),0 0 0 1px #000}
+  .win.active{box-shadow:inset 0 0 0 1px var(--amber),0 8px 26px #000b}
+  .win.skinned{box-shadow:none}
+  .sunken,.sunken-thin,.field,.list,textarea.pad,.lcd,.mpdisp,#tray,.status .pane,.dt table,.dt .calhead select,table.score,.swatches .sw,iframe.appframe,.ms .frame,.felt{box-shadow:inset 0 0 0 1px var(--line-dim)}
+  .btn{color:var(--text)}
+  .btn:hover{background:#1b2314}
+  .btn:active,.btn.down,.task.on,.tbtn:active{box-shadow:inset 0 0 0 1px var(--amber);color:var(--amber);background:#1b2314;background-image:none}
+  .btn:disabled,.mi.disabled{text-shadow:none}
+  .field,.list,textarea.pad,.dt table,.dt .calhead select,table.score,table.cust th,select{background:var(--well);color:var(--text)}
+  .field,textarea.pad{caret-color:var(--amber)}
+  ::selection{background:var(--amber);color:var(--ink)}
+  .dd{color:var(--text)}
+  .mt.open,.mi:hover:not(.disabled),.smlist .mi.open,.dd .mi.open,.list .row.sel,.dt td.today,.task.flash,.dicon.sel span,.htname.on{background:var(--sel);color:var(--ink)}
+  .dicon.sel span{outline-color:var(--ink)}
+  .sep{border-top:1px dashed var(--line-dim);border-bottom:0}
+  .win .tb{background:transparent;color:var(--gray-text);border-bottom:1px solid var(--line-dim)}
+  .win.active .tb,.dlg .tb{background:var(--title);color:var(--ink);border-bottom:0}
+  .win .tb .tt::before{content:"[ "} .win .tb .tt::after{content:" ]"}
+  .tbtn.raised{background:transparent;box-shadow:none}
+  .win:not(.active) .tb .tbtn svg{filter:invert(.75)}
+  .dicon{color:var(--text)}
+  .dicon img,.win .tb img,.task img,.qbtn img,.mi img,#menubtn img,#tray img,.wx img{filter:grayscale(1) sepia(1) hue-rotate(38deg) saturate(1.5) brightness(1.1)}
+  #taskbar{background:var(--well);border-top:1px solid var(--line);box-shadow:none}
+  .tbgrip{background:var(--line-dim);width:1px;margin:0 3px}
+  .task,.qbtn{background:transparent;color:var(--text)}
+  #startmenu .band{background:var(--line-dim);color:var(--text)}
+  #startmenu .band b{color:var(--amber)}
+  .wx .meta{color:var(--text)}
+  .dt th{border-bottom:1px solid var(--line-dim)} .dt td.dim{color:var(--gray-text)}
+  table.score th,table.score td{border-bottom:1px solid var(--line-dim)} table.score tr.tot td{border-top:1px solid var(--line)}
+  table.cust th{border-bottom:1px solid var(--line-dim)}
+  .cell{box-shadow:inset 0 0 0 1px var(--line-dim)}
+  .cell.open{box-shadow:inset 0 0 0 1px #1c2416;background:var(--well)}
+  .cell.n1{color:#7fb0ff}.cell.n2{color:#7fd67f}.cell.n3{color:#ff7a6b}.cell.n4{color:#b9a2ff}.cell.n5{color:#ff9f6b}.cell.n6{color:#5fd6d6}.cell.n7{color:#e6e6e6}.cell.n8{color:#99a38a}
+  .btn.ck.blue{color:#7fb0ff} .btn.ck.red{color:#ff7a6b}
+  .lcd,.mptitle,.mptime{color:var(--amber)}
+  input[type=radio],input[type=checkbox],.list .row input[type=checkbox]{accent-color:var(--line)}
+  #quick.droptarget,.swatches .sw.on{outline-color:var(--text)}
+  .list .row.done span{color:var(--gray-text)}
 </style>
 </head>
 <body>
 <div id="desktop"><div id="icons"></div></div>
 <div id="taskbar">
-  <button id="menubtn" class="btn"><img id="menuicon" alt="">Start</button>
+  <button id="menubtn" class="btn"><img id="menuicon" alt="">nest</button>
   <div class="tbgrip"></div>
   <div id="quick"></div>
   <div class="tbgrip" id="qgrip"></div>
   <div id="tasks"></div>
   <div id="tray"><span id="traytimer" style="display:none" title="Timer"><img alt=""><span></span></span><span id="traywx" style="display:none"><img alt=""><span></span></span><span id="trayclock">00:00</span></div>
 </div>
-<div id="startmenu"><div class="band"><span><b>Desk</b></span></div><div class="smlist" id="startlist"></div></div>
+<div id="startmenu"><div class="band"><span><b>nest</b>.os</span></div><div class="smlist" id="startlist"></div></div>
 <div id="modal"></div>
 <div id="off"></div>
 <input type="file" id="filein" style="display:none" multiple accept="audio/*,video/*">
@@ -2914,8 +2967,10 @@ function rvHelp(){ alertDlg('Reversi', `Place a disc so that it traps one or mor
 // ===== shell.js =====
 // ================= Shell: display settings, desktop icons, quick launch, start menu, tray, dialogs, screen saver, boot =================
 const WIN95_TEAL = '#008080';
-const CFG = Object.assign({scheme:'desk', bg:WIN95_TEAL, pattern:'none', wallMode:'center', saver:'none', saverWait:5, showClock:true, clockSeconds:false, quick:true, trayWeather:true, iconText:'light'}, store.get('settings', {}));
+const NEST_BG = '#0b0f0a';
+const CFG = Object.assign({scheme:'desk', bg:NEST_BG, pattern:'none', wallMode:'center', saver:'none', saverWait:5, showClock:true, clockSeconds:false, quick:true, trayWeather:true, iconText:'light'}, store.get('settings', {}));
 function saveCfg(){ store.set('settings', CFG); }
+if (!store.get('nestskin', 0)){ if (CFG.bg === WIN95_TEAL){ CFG.bg = NEST_BG; saveCfg(); } store.set('nestskin', 1); }
 const PATTERNS = { // original 8x8 patterns, drawn in black over the desktop colour
   Bricks:['########','#.......','#.......','#.......','########','....#...','....#...','....#...'],
   Dots:['#...#...','........','..#...#.','........','#...#...','........','..#...#.','........'],
